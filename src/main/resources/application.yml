@@ -1,0 +1,23 @@
+#server:
+#  port: 8082
+
+#person:
+#  #lastName: 张三1
+#  #last-name: 张三2
+#  last_name: 张三3
+#  age: 18
+#  boss: false
+#  birth: 2019/5/1
+#  maps: {key1: value1,key2: value2}
+#  lists:
+#    - 李四
+#    - 王五
+#  dog:
+#    name: 小狗
+#    age: 2
+
+imageService:
+ imageBaseUrl: http://192.168.1.1:8080/image/page.png
+
+
+
