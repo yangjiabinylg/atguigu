@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <h1>  访问  http://localhost:8080/   进入当前页面index.html  springboot默认配置index.html路径</h1>
+
+
+
+    <!--   视频里面的jqurey有问题  用不了  我用了毕业设计的 jquery   -->
+    <script src="/asserts/js/jquery.min.js"></script>
+    <!--    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>-->
+
+
+
+
+
+
+
+    <script>
+
+        $(function(){
+            $.ajax({
+                type: "post",
+                //url: "http://127.0.0.1:8080/hello2",
+                //url: "http://localhost:8080/hello2",
+                url: "/user/login",
+                data: {username:"admin",password:"123456"},
+                dataType:"json",
+                success: function(result){
+                    debugger;
+                    alert(result.data);
+                    window.location.href = "/kid/kid-list.html";
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert("服务器错误");
+                }
+            });
+
+        });
+
+
+
+
+    </script>
+
+</body>
+</html>

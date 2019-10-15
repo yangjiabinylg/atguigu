@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <h1>  访问  http://localhost:8080/   进入当前页面index.html  springboot默认配置index.html路径</h1>
+<!--<script src="/static/asserts/js/jquery-3.2.1.slim.min.js"></script>-->
+<!--   视频里面的jqurey有问题  用不了  我用了毕业设计的 jquery   -->
+<!--    <script src="/asserts/js/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+
+
+
+
+    <script>
+
+        //$(function(){$.ajax();})
+
+        $(function(){
+
+            // $.ajax({
+            //     type:"GET",
+            //     //url:"service.php?number="+$("#keyword").val(),
+            //     //url:"http://localhost:8080/hello",
+            //     url:"/hello2",
+            //     dataType:"json",
+            //     data : param.data     || '',//请求的数据
+            //     success:function(data){
+            //         debugger;
+            //         alert(data  );
+            //         // if(data.success){
+            //         //     //$("searchResult").html(data.msg);
+            //         // }else{
+            //         //     //$("#searchResult").html("出现错误：" + data.msg);
+            //         // }
+            //     },
+            //     error:function(jqXHR){
+            //         debugger;
+            //         //alert("发生错误："+ jqXHR.status);
+            //         alert("发生错误：" );
+            //     }
+            // });
+
+            $.ajax({
+                type: "get",
+                //url: "http://127.0.0.1:8080/hello2",
+                //url: "http://localhost:8080/hello2",
+                url: "/user/login",
+                data: {username:"admin",password:"1234561"},
+                dataType:"json",
+                success: function(result){
+
+                    debugger;
+                    alert(result.data);
+                    window.location.href = "/kid/kid-list.html";
+
+                    // if (result.status == "0") {
+                    //     location.href = "index.html";
+                    // } else if (result.returnNo == "3333") {
+                    //     alert("用户名密码错误");
+                    // };
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert("服务器错误");
+                }
+            });
+
+            //     var param = null;
+            //
+            //     $.ajax({
+            //         type:   'get' , //取出参数没有就get  表示get还是post
+            //         //url : "http://localhost:8089"+param.url    || '',     //网络请求地址
+            //         url :   '/user/hello',     //网络请求地址
+            //         dataType:   'json',//一般是json格式的
+            //         data :   '',//请求的数据
+            //
+            //         success : function(res){//请求成功
+            //             //这里是为了  只有在请求数据和请求状态都正确的情况下才认为是成功
+            //             //否则都是失败处理
+            //             debugger;
+            //             if(0 === res.status){//请求数据成功  接口中定义的
+            //                 typeof param.success === 'function' && param.success(res.data,res.msg);
+            //             }
+            //             // 没有登录状态，需要强制登录
+            //             else if(10 === res.status){
+            //                 _this.doLogin();
+            //             }
+            //             // 请求数据错误
+            //             else if(1 === res.status){
+            //                 //判断error 是不是存在   例如  非法请求参数 自己的账户删除别人的购物车
+            //                 typeof param.error === 'function' && param.error(res.msg);
+            //             }
+            //         },
+            //         error : function(err){//请求出错
+            //             console.log(err);
+            //             debugger;
+            //             //例如  404 503之类的
+            //             typeof param.error === 'function' && param.error(err.statusText);
+            //         }
+            //     });
+            //
+        });
+
+
+
+
+    </script>
+
+</body>
+</html>
