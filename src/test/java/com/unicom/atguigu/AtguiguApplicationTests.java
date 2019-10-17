@@ -33,6 +33,12 @@ public class AtguiguApplicationTests {
          */
 
 
+        /**
+               1.class com.alibaba.druid.pool.DruidDataSource
+               2.com.mysql.cj.jdbc.ConnectionImpl@15f8701f
+               这个是换成阿里巴巴的druid之后的 打印
+         */
+
 
     }
 
