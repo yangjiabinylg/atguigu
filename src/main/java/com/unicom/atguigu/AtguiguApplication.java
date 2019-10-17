@@ -1,5 +1,6 @@
 package com.unicom.atguigu;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  *   @SpringBootApplication  标注主程序，说明是一个spring应用
  */
+@MapperScan(value = "com.unicom.atguigu.mapper")
 @SpringBootApplication
 public class AtguiguApplication {
 
