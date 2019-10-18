@@ -29,6 +29,15 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
+        <!--     引入自定义的starter      -->
+        <dependency>
+            <groupId>com.unicom.starter</groupId>
+            <artifactId>unicom-spring-boot-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>
