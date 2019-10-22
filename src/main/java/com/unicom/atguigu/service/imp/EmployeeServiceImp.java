@@ -5,6 +5,7 @@ import com.unicom.atguigu.dao.EmployeeMapper;
 import com.unicom.atguigu.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -101,6 +102,12 @@ public class EmployeeServiceImp implements EmployeeService {
      *
      *
      *
+     *
+     *       增加/查找 缓存
+     *       @Cacheable获取缓存数据，如果没有就先查数据库，在放缓存，
+     *       缓存有数据  就不会去查询数据库
+     *
+     *
      * @param id
      * @return
      */
@@ -109,11 +116,50 @@ public class EmployeeServiceImp implements EmployeeService {
     /** @Cacheable(cacheNames = {"emp"}  )  和上面等效 在只有一个参数的情况下   */
     /** @Cacheable(cacheNames = {"emp"},key = "#root.methodName+'['+#id+']'")   */
     /**   上面生成key是   emp::getEmp[1]    这是自定的 key     */
-    @Cacheable(cacheNames = {"emp"},keyGenerator = "myKeyGenerator",condition = "#id>1",unless = "#id==2")
+    /**  @Cacheable(cacheNames = {"emp"},keyGenerator = "myKeyGenerator",condition = "#id>1",unless = "#id==2")  */
     /**   上面使用自定义的  myKeyGenerator     */
+    @Cacheable(cacheNames = {"emp"},key = "#id")
     public Employee getEmp(Integer id) {
         log.info("查询 ：{} 号员工",id);
         Employee employee = employeeMapper.selectByPrimaryKey(id);
+        return employee;
+    }
+
+
+    /**
+     *    更新缓存
+     *    @CachePut   既调用方法，有更新数据
+     *    修改了数据库的某个数据，同时更新缓存
+     *
+     *    运行时机：
+     *       1.先调用目标方法
+     *       2.将目标方法的结果缓存起来
+     *
+     *
+     *    测试步骤：
+     *    1.查询3号 员工，查询的结果放在缓存中
+     *        key:1  value: lastame张三
+     *    2.第二次及以后查询还是之前的结果
+     *    3.更新3号员工：{lastName:张飞赵云刘备 }
+     *    4.查询下3号员工
+     *       key="#employee.id"使用出啊如的参数的员工id为主键
+     *       key="#result.id"使用返回后的id作为主键
+     *         但hi@Cacheable的key不能使用#result
+     *       应该是更新后的数据你（但是没有更新 因为没有指定参数为key  key="#employee.id"）
+     *
+     *
+     *
+     *       记住：
+     *          主要就是key要保持一致，get的key和update的key要保持一致
+     *
+     *
+     * @return
+     */
+    @CachePut(value = "emp" ,key="#employee.id")
+    @Override
+    public Employee updateEmp(Employee employee){
+        log.info("updateEmp:{}",employee);
+        employeeMapper.updateByPrimaryKeySelective(employee);
         return employee;
     }
 
