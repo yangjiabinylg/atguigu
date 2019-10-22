@@ -20,7 +20,6 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
-
     @GetMapping("/emp/{id}")
     public Employee getEmloyee(@PathVariable("id") Integer id){
         Employee emp = employeeService.getEmp(id);
@@ -31,6 +30,12 @@ public class EmployeeController {
     public Employee updateEmloyee(Employee employee){
         Employee emp = employeeService.updateEmp(employee);
         return emp;
+    }
+
+    @GetMapping("/delemp")
+    public String deleteEmloyee(Integer id){
+        employeeService.deleteEmp(id);
+        return "success";
     }
 
 

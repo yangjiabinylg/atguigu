@@ -5,6 +5,7 @@ import com.unicom.atguigu.dao.EmployeeMapper;
 import com.unicom.atguigu.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -161,6 +162,34 @@ public class EmployeeServiceImp implements EmployeeService {
         log.info("updateEmp:{}",employee);
         employeeMapper.updateByPrimaryKeySelective(employee);
         return employee;
+    }
+
+
+    /**
+     * @CacheEvict  删除缓存
+     * key:指定要删除的数据
+     * ,allEntries = true  指定清除这个缓存中的所有数据
+     *
+     * beforeInvocation = false: 缓存的清楚是否在方法执行之前
+     *    默认时在方法执行之后执行的。如果出现异常不会清空缓存
+     *
+     * beforeInvocation = true: 缓存的清楚在方法执行之后
+     *    无论方法是否出现异常，缓存都清除
+     *    
+     */
+    @Override
+    /**  @CacheEvict(value = "emp",key = "#id" ,allEntries = true)  */
+    /**  @CacheEvict(value = "emp",key = "#id" ,allEntries = true)  */
+    /**  ,allEntries = true  删除时全部缓存删除  删除1号  2号也会删除  */
+    public void deleteEmp(Integer id){
+        log.info("deleteEmp:{}",id);
+        // 就不删除了
+        employeeMapper.deleteByPrimaryKey(id);
+        //int i = 5/0;
+        /**
+         *      * beforeInvocation = false: 缓存的清楚是否在方法执行之前
+         *      *    默认时在方法执行之后执行的。
+         */
     }
 
 
