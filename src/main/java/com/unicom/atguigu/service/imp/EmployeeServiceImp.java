@@ -35,9 +35,13 @@ public class EmployeeServiceImp implements EmployeeService {
      *           key/keyGenerator:2选一使用
      *      cacheManager: 指定缓存管理器，或者cacheResolver指定获取解析器
      *      condition:指定符合条件的情况下才缓存；
-     *          ，condition="#id>0"
+     *          ，condition="#id>0"  id的值>0的时候才进行缓存
+     *          ，condition="#a0>1"; 第一个参数的值>1的时候才进行缓存
+     *
      *      unless:否定缓存；当unless指定的条件为true，方法的返回值就不会缓存；
      *           可以获得到结果进行判断  unless = "#result == null"
+     *           unless = "#a0==2"; 如果第二个参数值为2，结果不进行缓存
+     *
      *      sync: 是否使用异步
      *
      *
@@ -45,12 +49,68 @@ public class EmployeeServiceImp implements EmployeeService {
      *      缓存管理器cacheManager管理很多的cache组  一个组内id作为主键）
      *
      *
+     *
+     *      原理：（讲解一下，为什么第一次会又sql打印，第二次就没有sql打印了）
+     *         1.自动配置类；(连续2次shift 查找CacheAutoConfiguration类)
+     *
+     *         2.缓存配置类
+     *         找到selectImports  断点打在 return imports;上 找到这几个类
+     *         org.springframework.boot.autoconfigure.cache.GenericCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.JCacheCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.EhCacheCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.HazelcastCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.InfinispanCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.CouchbaseCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.CaffeineCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.SimpleCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.NoOpCacheConfiguration
+     *
+     *         3.那个配置类默认生效：SimpleCacheConfiguration
+     *
+     *         4.给容器中注册了一个cacheManager；ConcurrentMapCacheManager
+     *         (这个是没有redis数据库才用)
+     *
+     *         5.可以获取和创建ConcurrentMapCache类型的缓存组件；
+     *         它的作用是将数据保存在concurrentMap中；
+     *
+     *         运行流程：
+     *         @Cacheable:
+     *         1.方法运行之前，先去查询Cache（缓存组件），按照cacheName指定的名字获取；
+     *            （CacheManager先获取相应的缓存），第一次获取缓存如果没有Cache组件会自动创建
+     *
+     *         2.去Cache中查找缓存的内容，使用一个key，默认就是方法的参数；
+     *         key是按照某种策略生成的，默认使用keyGenerator生成，（SimpleKyeGenerrator生成key）
+     *               SimpleKeyGenerator生成key的默认策略
+     *                     如果没有参数；key = new SimpKey（）；
+     *                     如果一个参数；key = 参数值
+     *                     如果多个参数；key = new SimpleKey(param);
+     *
+     *         3.没有查到缓存就调用目标方法；
+     *
+     *         4.将目标方法返回的结果，放进缓存中
+     *
+     *         @Cacheable标注的方法执行之前先来检查缓存中有没有这个数据，默认按照参数
+     *         的值作为key去查询缓存，
+     *         如果没有就运行方法并将结果放入缓存，以后再来调用就可以直接使用缓存中的数据
+     *
+     *         核心：
+     *             1）使用cacheManager[ConcurrentMapCacheManager]
+     *             按照名字得到Cache[ConcurrentMapCache]组件
+     *             2）key使用keyGenerator生成的。默认是SimpleKeyGenerator
+     *
+     *
+     *
      * @param id
      * @return
      */
     @Override
-    //@Cacheable(cacheNames = {"emp"},key = "#id")
-    @Cacheable(cacheNames = {"emp"}  )
+    /** @Cacheable(cacheNames = {"emp"},key = "#id")   */
+    /** @Cacheable(cacheNames = {"emp"}  )  和上面等效 在只有一个参数的情况下   */
+    /** @Cacheable(cacheNames = {"emp"},key = "#root.methodName+'['+#id+']'")   */
+    /**   上面生成key是   emp::getEmp[1]    这是自定的 key     */
+    @Cacheable(cacheNames = {"emp"},keyGenerator = "myKeyGenerator",condition = "#id>1",unless = "#id==2")
+    /**   上面使用自定义的  myKeyGenerator     */
     public Employee getEmp(Integer id) {
         log.info("查询 ：{} 号员工",id);
         Employee employee = employeeMapper.selectByPrimaryKey(id);
