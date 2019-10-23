@@ -65,7 +65,7 @@ public class EmployeeServiceImp implements EmployeeService {
      *         org.springframework.boot.autoconfigure.cache.CouchbaseCacheConfiguration
      *         org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration
      *         org.springframework.boot.autoconfigure.cache.CaffeineCacheConfiguration
-     *         org.springframework.boot.autoconfigure.cache.SimpleCacheConfiguration
+     *         org.springframework.boot.autoconfigure.cache.SimpleCacheConfiguration【默认】
      *         org.springframework.boot.autoconfigure.cache.NoOpCacheConfiguration
      *
      *         3.那个配置类默认生效：SimpleCacheConfiguration
