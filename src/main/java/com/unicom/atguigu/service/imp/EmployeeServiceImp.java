@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-/** @CacheConfig(cacheNames = "emp")  可以替换每个方法上的value="emp"   抽取公共配置   */
-@CacheConfig(cacheNames = "emp")
+/** @CacheConfig(cacheNames = "emp")  可以替换每个方法上的value="emp"   抽取公共配置
+ * 多个cacheManager就要指定cacheManager
+ */
+@CacheConfig(cacheNames = "emp",cacheManager = "employeeRedisCacheManager")
 public class EmployeeServiceImp implements EmployeeService {
 
     @Autowired

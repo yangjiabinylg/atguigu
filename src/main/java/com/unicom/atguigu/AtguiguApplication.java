@@ -34,6 +34,7 @@ import org.springframework.cache.annotation.EnableCaching;
  *   默认使用的是ConcurentMapCacheManager==ConcurrentMapCache;将数据保存在ConcurrentMap<Object,Objcect>
  *   开发中间件使用缓存中间件  redis  mencached  ehcache;
  *
+ *
  *   默认使用的是concurentMap   实际中一般使用的是redis这种缓存中间件
  *
  *
@@ -46,18 +47,30 @@ import org.springframework.cache.annotation.EnableCaching;
  *   和不同级别的 磁盘持久化（persistence）， 并通过 Redis哨兵（Sentinel）
  *   和自动 分区（Cluster）提供高可用性（high availability）。
  *
+ *
  *   1.安装redis 使用docker；
  *   2.引入redis的starter
+ *   3.配置redis
+ *   4.测试缓存
+ *      原理：CacheManager===Cache  缓存组件来实际中存取数据
+ *      1）引入redis的starter，容器中保存的是 RedisCacheManager;
+ *      2)RedisCacheManager 帮我们创建RedisCache来作为缓存组件，
+ *      RedisCache通过操作redis缓存数据的
+ *      3）默认保存k-v都是Object；利用序列化保存；如何保存为json
+ *          1.引入redis的starter；cacheManager变成RedisCacheManager
+ *          2.默认创建的RedisCacheManger操作redis的时候使用的是RedisTemplate<Object,Object>
+ *          3.RedisTemplate<Object,Object>是默认使用jdk的序列化机制
+ *      4) 自定义CacheManger（默认redisManger是用jdk序列化，只能自定义变为json）
  *
  *
  *
  *
  *
  */
-/** @MapperScan指定需要扫描的Mapper的接口所在包  */
+/**  @MapperScan指定需要扫描的Mapper的接口所在包   */
 @MapperScan("com.unicom.atguigu.dao")
 @SpringBootApplication
-/**  1.开启基于注解的缓存（主类上）@EnableCaching   */
+/**   1.开启基于注解的缓存（主类上）@EnableCaching   */
 @EnableCaching
 public class AtguiguApplication {
 
