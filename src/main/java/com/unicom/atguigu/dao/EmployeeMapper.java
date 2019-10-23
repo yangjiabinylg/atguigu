@@ -18,4 +18,15 @@ public interface EmployeeMapper {
     int updateByPrimaryKeySelective(Employee record);
 
     int updateByPrimaryKey(Employee record);
+
+
+
+    /**
+     *     @param lastName
+     *     @return
+     */
+    Employee getEmpByLastName(String lastName);
+
+
+
 }

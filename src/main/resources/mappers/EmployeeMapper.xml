@@ -92,4 +92,20 @@
       d_id = #{dId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+
+
+<!--  Employee getEmpByLastName(String lastName);-->
+  <select id="getEmpByLastName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from employee
+    where lastName = #{lastname,jdbcType=VARCHAR}
+  </select>
+
+
+
+
+
 </mapper>

@@ -5,9 +5,7 @@ import com.unicom.atguigu.dao.EmployeeMapper;
 import com.unicom.atguigu.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +17,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+/** @CacheConfig(cacheNames = "emp")  可以替换每个方法上的value="emp"   抽取公共配置   */
+@CacheConfig(cacheNames = "emp")
 public class EmployeeServiceImp implements EmployeeService {
 
     @Autowired
@@ -119,7 +119,7 @@ public class EmployeeServiceImp implements EmployeeService {
     /**   上面生成key是   emp::getEmp[1]    这是自定的 key     */
     /**  @Cacheable(cacheNames = {"emp"},keyGenerator = "myKeyGenerator",condition = "#id>1",unless = "#id==2")  */
     /**   上面使用自定义的  myKeyGenerator     */
-    @Cacheable(cacheNames = {"emp"},key = "#id")
+    @Cacheable(/** cacheNames = {"emp"},*/key = "#id")
     public Employee getEmp(Integer id) {
         log.info("查询 ：{} 号员工",id);
         Employee employee = employeeMapper.selectByPrimaryKey(id);
@@ -156,7 +156,7 @@ public class EmployeeServiceImp implements EmployeeService {
      *
      * @return
      */
-    @CachePut(value = "emp" ,key="#employee.id")
+    @CachePut(/**value = "emp" ,*/key="#employee.id")
     @Override
     public Employee updateEmp(Employee employee){
         log.info("updateEmp:{}",employee);
@@ -175,7 +175,7 @@ public class EmployeeServiceImp implements EmployeeService {
      *
      * beforeInvocation = true: 缓存的清楚在方法执行之后
      *    无论方法是否出现异常，缓存都清除
-     *    
+     *
      */
     @Override
     /**  @CacheEvict(value = "emp",key = "#id" ,allEntries = true)  */
@@ -190,6 +190,44 @@ public class EmployeeServiceImp implements EmployeeService {
          *      * beforeInvocation = false: 缓存的清楚是否在方法执行之前
          *      *    默认时在方法执行之后执行的。
          */
+    }
+
+
+    /**
+     *     这个时复杂的缓存
+     *     员工的名字，id，邮箱，都能查询到这个员工
+     *
+     *
+     *
+     *     根据用户名查询Employee
+     *     访问 http://localhost:8080/emp/last-name/张三   数据库sql执行一次
+     *     访问 http://localhost:8080/emp/8  数据库sql没有执行   说明已经缓存了
+     *     再次访问 http://localhost:8080/emp/last-name/张三   数据库sql执行又一次
+     *     为什么 不是已经缓存过了嘛？？
+     *     因为cachePut注解  这个方法一定会执行，
+     *     再次执行lastName查询  还是会查询数据库的
+     *
+     *
+     *     @Caching定义复杂的缓存规则
+     *
+     *
+     *
+     *
+     * @param lastName
+     * @return
+     */
+    @Caching(
+            cacheable = {
+                    @Cacheable( /** value="emp", */   key = "#lastName")
+            } ,
+            put = {
+                    @CachePut( /** value = "emp", */   key = "#result.id"),
+                    @CachePut( /** value = "emp",  */  key = "#result.email")
+            }
+    )
+    @Override
+    public Employee getEmpByLastName(String lastName) {
+        return employeeMapper.getEmpByLastName(lastName);
     }
 
 
