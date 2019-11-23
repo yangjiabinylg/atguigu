@@ -1,5 +1,7 @@
 package com.unicom.atguigu.controller;
 
+import com.unicom.atguigu.service.AsynService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,10 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HelloController {
 
+    @Autowired
+    AsynService asynService;
+
     @ResponseBody
     @RequestMapping("/hello")
     public String hello(){
-        return "hello world";
+        //调用耗时任务10秒后才会响应  hello_world
+        asynService.hello();
+        return "hello_world";
     }
 
 
