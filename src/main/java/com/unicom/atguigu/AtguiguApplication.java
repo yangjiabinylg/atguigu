@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *    启动类
  *
  *   @SpringBootApplication  标注主程序，说明是一个spring应用
+ *
  */
 @SpringBootApplication
 public class AtguiguApplication {
