@@ -1,6 +1,7 @@
 package com.unicom.atguigu.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,6 +20,12 @@ public class HelloController {
     @RequestMapping("/hello")
     public String hello(){
         return "hello world";
+    }
+
+
+    @GetMapping("/abc11")
+    public String hello2(){
+        return "hello";
     }
 
 
